@@ -79,6 +79,31 @@ class ChannelPage extends YoutubePage<_InitialData> {
     });
   }
 
+  static Future<ChannelPage> getByChannelName(
+    YoutubeHttpClient httpClient,
+    String channelName,
+  ) {
+    var url = 'https://www.youtube.com/$channelName';
+
+    return retry(httpClient, () async {
+      try {
+        final raw = await httpClient.getString(url);
+        final result = ChannelPage.parse(raw);
+
+        if (!result.isOk) {
+          throw TransientFailureException('Channel page is broken');
+        }
+        return result;
+      } on FatalFailureException catch (e) {
+        if (e.statusCode != 404) {
+          rethrow;
+        }
+        url = 'https://www.youtube.com/c/$channelName';
+      }
+      throw FatalFailureException('', 0);
+    });
+  }
+
   ///
   static Future<ChannelPage> getByHandle(
     YoutubeHttpClient httpClient,

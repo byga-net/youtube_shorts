@@ -41,7 +41,7 @@ class ChannelClient {
   Future<Channel> getByUsername(dynamic username) async {
     username = Username.fromString(username);
 
-    final channelPage = await ChannelPage.getByUsername(
+    final channelPage = await ChannelPage.getByChannelName(
       _httpClient,
       (username as Username).value,
     );

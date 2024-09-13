@@ -62,6 +62,11 @@ class VideoId with _$VideoId {
   /// Parses a video id from url or if given a valid id as url returns itself.
   /// Returns null if the id couldn't be extracted.
   static String? parseVideoId(String url) {
+    if (url.contains('shorts-shelf-item-')) {
+      String result = url.replaceAll(
+          RegExp(r'shorts-shelf-item-'), 'https://www.youtube.com/shorts/');
+      return result;
+    }
     if (url.isNullOrWhiteSpace) {
       return null;
     }
